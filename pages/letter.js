@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Wheel from "../components/Wheel";
 import { getSessionId } from "../lib/session";
@@ -25,8 +25,7 @@ export default function LetterPage() {
   const [showSkip, setShowSkip] = useState(false);
   const [showWheel, setShowWheel] = useState(false);
   const [result, setResult] = useState(null); // 中奖奖品全名
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef(null);
+
 
   // 进页面先问服务器：有没有点过好呀？抽过奖没？
   useEffect(() => {
@@ -54,18 +53,7 @@ export default function LetterPage() {
     return () => clearTimeout(t);
   }, [ready, rolled]);
 
-  function toggleMusic() {
-    const a = audioRef.current;
-    if (!a) return;
-    if (a.paused) {
-      a.play().then(() => setPlaying(true)).catch(() => {
-        alert("再点一下音乐按钮就能播放啦");
-      });
-    } else {
-      a.pause();
-      setPlaying(false);
-    }
-  }
+
 
   function onDrawn(prizeFull) {
     setShowWheel(false);
@@ -76,15 +64,7 @@ export default function LetterPage() {
 
   return (
     <main className="letter-page">
-      {/* 背景音乐：把《只对你有感觉》的 mp3 放到 public/music.mp3 */}
-      <audio ref={audioRef} src="/music.mp3" loop preload="auto" />
-      <button
-        className={`music-btn ${playing ? "playing" : ""}`}
-        onClick={toggleMusic}
-        aria-label="播放或暂停音乐"
-      >
-        {playing ? "🎵" : "🔇"}
-      </button>
+
 
       {/* 电影片尾式滚动信件 */}
       {!result && !rolled && (
